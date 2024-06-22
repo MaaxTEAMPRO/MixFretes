@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mix Fretes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>Mix Fretes</header>
+    <main>
+        <form id="freteForm" onsubmit="event.preventDefault(); calcularFrete();">
+            <label for="cidadeOrigem">Cidade de Origem:</label>
+            <input type="text" id="cidadeOrigem" name="cidadeOrigem" required>
+            <label for="cidadeDestino">Cidade de Destino:</label>
+            <input type="text" id="cidadeDestino" name="cidadeDestino" required>
+            <label for="mediaConsumo">Média de Consumo do Caminhão (km/l):</label>
+            <input type="number" id="mediaConsumo" name="mediaConsumo" step="0.1" required>
+            <label for="custoDiesel">Custo do Diesel (R$ por litro):</label>
+            <input type="number" id="custoDiesel" name="custoDiesel" step="0.01" required>
+            <label for="valorFrete">Valor do Frete (R$):</label>
+            <input type="number" id="valorFrete" name="valorFrete" step="0.01" required>
+            <label for="adicionarVolta">
+                <input type="checkbox" id="adicionarVolta" name="adicionarVolta">
+                Adicionar Volta (Conteinerizada)
+            </label>
+            <button type="submit">Calcular Frete</button>
+        </form>
+        <div class="city-names" id="cityNames"></div>
+        <div id="weatherOrigem"></div>
+        <div id="rainOrigem"></div>
+        <div id="weatherDestino"></div>
+        <div id="rainDestino"></div>
+        <div id="resultado">
+            <button class="copy-button" onclick="copiarResultado()">&#128203;</button>
+            <p id="distancia" class="result-item"></p>
+            <p id="custoDieselResultado" class="result-item"></p>
+            <p id="custoManutencao" class="result-item"></p>
+            <p id="custoPneus" class="result-item"></p>
+            <p id="seguroImprevistos" class="result-item"></p>
+            <p id="valorTotalDespesas" class="result-item"></p>
+            <p id="lucroPrejuizo" class="result-item"></p>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Mix Fretes. Todos os direitos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
