@@ -110,8 +110,8 @@ function calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, segu
         distanciaKm *= 2; // Duplicar a distância se adicionar a volta
     }
     const custoComDiesel = (distanciaKm / mediaConsumo) * custoDiesel;
-    const custoComManutencao = distanciaKm * 0.30; // Custo aproximado de manutenção por km
-    const custoComPneus = distanciaKm * 0.57; // Custo de manutenção de pneus por km
+    const custoComManutencao = distanciaKm * 0.32; // Custo aproximado de manutenção por km
+    const custoComPneus = distanciaKm * 0.58; // Custo de manutenção de pneus por km
     const valorTotalDespesas = custoComDiesel + custoComManutencao + custoComPneus + seguroImprevistos;
     const lucroPrejuizo = valorFrete - valorTotalDespesas;
 
