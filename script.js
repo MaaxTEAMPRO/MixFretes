@@ -114,13 +114,21 @@ function calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, segu
     const custoComPneus = distanciaKm * 0.58; // Custo de manutenção de pneus por km
     const valorTotalDespesas = custoComDiesel + custoComManutencao + custoComPneus + seguroImprevistos;
     const lucroPrejuizo = valorFrete - valorTotalDespesas;
+    const lucroPorKm = lucroPrejuizo / distanciaKm;
+    
+    // Calcular o frete ideal
+    const lpkmIdeal = distanciaKm <= 400 ? 2.5 : 2.0;
+    const freteIdeal = valorTotalDespesas + (lpkmIdeal * distanciaKm);
 
+    document.getElementById('precoFrete').innerText = `Preço do Frete: R$ ${valorFrete.toFixed(2)}`;
     document.getElementById('distancia').innerText = `Distância: ${distanciaKm.toFixed(2)} km`;
     document.getElementById('custoDieselResultado').innerText = `Custo com Diesel: R$ ${custoComDiesel.toFixed(2)}`;
     document.getElementById('custoManutencao').innerText = `Custo com Manutenção: R$ ${custoComManutencao.toFixed(2)}`;
     document.getElementById('custoPneus').innerText = `Custo com Pneus: R$ ${custoComPneus.toFixed(2)}`;
     document.getElementById('seguroImprevistos').innerText = `Seguro de Imprevistos: R$ ${seguroImprevistos.toFixed(2)}`;
     document.getElementById('valorTotalDespesas').innerText = `Valor Total de Despesas: R$ ${valorTotalDespesas.toFixed(2)}`;
+    document.getElementById('lucroPorKm').innerText = `Lucro por Quilômetro: R$ ${lucroPorKm.toFixed(2)}`;
+    document.getElementById('freteIdeal').innerText = `Frete Ideal/Cotação: R$ ${freteIdeal.toFixed(2)}`;
 
     const lucroPrejuizoElement = document.getElementById('lucroPrejuizo');
     lucroPrejuizoElement.innerText = lucroPrejuizo >= 0 
@@ -140,6 +148,8 @@ function copiarResultado() {
     const custoPneus = document.getElementById('custoPneus').innerText;
     const seguroImprevistos = document.getElementById('seguroImprevistos').innerText;
     const valorTotalDespesas = document.getElementById('valorTotalDespesas').innerText;
+    const lucroPorKm = document.getElementById('lucroPorKm').innerText;
+    const freteIdeal = document.getElementById('freteIdeal').innerText;
     const lucroPrejuizo = document.getElementById('lucroPrejuizo').innerText;
     const weatherOrigem = document.getElementById('weatherOrigem').innerText;
     const weatherDestino = document.getElementById('weatherDestino').innerText;
@@ -157,16 +167,20 @@ function copiarResultado() {
         ${custoPneus}
         ${seguroImprevistos}
         ${valorTotalDespesas}
-        
+        ${lucroPorKm}
+        ${freteIdeal}
         ${lucroPrejuizo}
     `;
 
-    const trimmedText = resultadoText.trim().split('\n').map(line => line.trim()).join('\n');
-
-    navigator.clipboard.writeText(trimmedText).then(() => {
-        alert('Resultados copiados para a área de transferência.');
-    });
+    const textArea = document.createElement('textarea');
+    textArea.value = resultadoText.trim();
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('Resultado copiado para a área de transferência!');
 }
+
 
 async function exibirPrevisaoCompleta(cidade, tipo) {
     const urlWeather = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cidade)}&appid=${openWeatherMapKey}&units=metric&lang=pt_br`;
