@@ -204,12 +204,13 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
                 weatherEmoji = '☀️ Sol';
                 break;
             case 'clouds':
-                weatherEmoji = '☁️ Nuvem';
+                weatherEmoji = '🌥️ Nuvem';
                 break;
             case 'thunderstorm':
                 weatherEmoji = '⛈️ Chuva Com Trovão';
                 break;
             case 'drizzle':
+                weatherEmoji = '🌧️ Garoa';
             case 'rain':
                 weatherEmoji = '🌧️ Nuvem Com Chuva';
                 break;
@@ -217,11 +218,12 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
                 weatherEmoji = '🌨️ Nuvem Com Neve';
                 break;
             case 'mist':
+
             case 'fog':
                 weatherEmoji = '🌫️ Nevoeiro';
                 break;
             default:
-                weatherEmoji = '🌥️ Nublado';
+                weatherEmoji = '☁️ Nublado';
                 break;
         }
 
@@ -235,7 +237,7 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
         let proximaChuva = 'sem previsão de chuva';
         for (let i = 0; i < dataForecast.list.length; i++) {
             const chuva = dataForecast.list[i].rain ? dataForecast.list[i].rain['3h'] : 0;
-            if (chuva >= 5) {
+            if (chuva >= 1) {
                 const horas = ((i + 1) * 3);
                 proximaChuva = `Chuva daqui a ${horas} horas (${chuva}mm)`;
                 break;
