@@ -386,7 +386,7 @@ function gerarImagem() {
     const horaFormatada = dataAtual.toLocaleTimeString('pt-BR');
 
     const resultadoHTML = `
-    <div style="text-align: center; background: white; width: 500px; height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div style="text-align: center; background: white; width: 400px; height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0px;">
         ${!incluirClima ? `<h1 style="color: #123354; margin-bottom: 10;">MixFretes</h1>` : ''}
         ${incluirClima ? `<p style="margin: 15px 0;"><strong>Clima Origem:</strong> ${climaOrigem}</p><p style="margin: 10px 0;"><strong>Clima Destino:</strong> ${climaDestino}</p>` : ''}
         <p style="margin: 12px 0;"><strong>Rota:</strong> ${cidadeOrigem} X ${cidadeDestino}</p>
