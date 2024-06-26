@@ -1,5 +1,13 @@
+
+// Variáveis para manutenção do código:
 const openRouteServiceKey = '5b3ce3597851110001cf6248a7350e10fe0047d5b435df18da0ca0ab';
 const openWeatherMapKey = '882a7c86ee232f1f5a53433800f48151';
+
+const velocidadeMedia = 38; // Km/h
+const milimetroschuva = 1;  // Considerar apenas chuvas com mais de 1mm
+const seguroImprevistos = 200; // R$
+const manutencaoKm = 0.32; //custo manutencao por km
+const custoPneusKm = 0.58; //custo pneus por km
 
 function saveToLocalStorage() {
     const formElements = document.querySelectorAll('#freteForm input, #freteForm checkbox');
@@ -25,7 +33,7 @@ document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
 document.getElementById('freteForm').addEventListener('input', saveToLocalStorage);
 
 async function calcularFrete() {
-    limparMensagensErro(); // Limpar mensagens de erro ao iniciar novo cálculo
+    limparMensagensErro();
 
     const cidadeOrigem = document.getElementById('cidadeOrigem').value.trim();
     const cidadeDestino = document.getElementById('cidadeDestino').value.trim();
@@ -33,7 +41,6 @@ async function calcularFrete() {
     const custoDiesel = parseFloat(document.getElementById('custoDiesel').value);
     const valorFrete = parseFloat(document.getElementById('valorFrete').value);
     const adicionarVolta = document.getElementById('adicionarVolta').checked;
-    const seguroImprevistos = 200;
 
     if (!cidadeOrigem || !cidadeDestino || isNaN(mediaConsumo) || isNaN(custoDiesel) || isNaN(valorFrete)) {
         exibirMensagemErro('Por favor, preencha todos os campos corretamente.');
@@ -55,9 +62,8 @@ async function calcularFrete() {
         await exibirPrevisaoCompleta(cidadeOrigem, 'origem');
         await exibirPrevisaoCompleta(cidadeDestino, 'destino');
 
-        const velocidadeMedia = 38; // Velocidade média em km/h
-        let tempoViagemHoras = Math.floor(distanciaKm / velocidadeMedia); // Horas completas
-        let tempoViagemMinutos = Math.round((distanciaKm / velocidadeMedia - tempoViagemHoras) * 60); // Minutos restantes
+        let tempoViagemHoras = Math.floor(distanciaKm / velocidadeMedia);
+        let tempoViagemMinutos = Math.round((distanciaKm / velocidadeMedia - tempoViagemHoras) * 60);
 
         if (adicionarVolta) {
             tempoViagemHoras *= 2;
@@ -133,7 +139,7 @@ async function calcularDistanciaRodoviaria(origemCoords, destinoCoords) {
 
     const data = await response.json();
     if (data.routes && data.routes.length > 0) {
-        return data.routes[0].summary.distance / 1000; // Convertendo metros para quilômetros
+        return data.routes[0].summary.distance / 1000;
     } else {
         console.error('Rota não encontrada.');
         return null;
@@ -142,11 +148,11 @@ async function calcularDistanciaRodoviaria(origemCoords, destinoCoords) {
 
 function calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, seguroImprevistos, adicionarVolta) {
     if (adicionarVolta) {
-        distanciaKm *= 2; // Duplicar a distância se adicionar volta
+        distanciaKm *= 2;
     }
     const custoComDiesel = (distanciaKm / mediaConsumo) * custoDiesel;
-    const custoComManutencao = distanciaKm * 0.32; // Custo aproximado de manutenção por km
-    const custoComPneus = distanciaKm * 0.58; // Custo de manutenção de pneus por km
+    const custoComManutencao = distanciaKm * manutencaoKm;
+    const custoComPneus = distanciaKm * custoPneusKm;
     const valorTotalDespesas = custoComDiesel + custoComManutencao + custoComPneus + seguroImprevistos;
     const lucroPrejuizo = valorFrete - valorTotalDespesas;
     const lucroPorKm = lucroPrejuizo / distanciaKm;
@@ -234,9 +240,8 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
         const tempAtual = dataWeather.main.temp.toFixed(1);
         const tempMin = dataWeather.main.temp_min.toFixed(1);
 
-        let tempMaxPrevista = Number.MIN_SAFE_INTEGER; // Inicializa com um valor muito negativo
+        let tempMaxPrevista = Number.MIN_SAFE_INTEGER;
 
-        // Verifica se há temperatura máxima disponível na resposta atual
         if (dataWeather.main.temp_max !== undefined) {
             tempMaxPrevista = dataWeather.main.temp_max;
         }
@@ -307,7 +312,6 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
                 break;
         }
 
-        // Previsão de chuva
         const responseForecast = await fetch(urlForecast);
         if (!responseForecast.ok) {
             throw new Error('Erro na requisição da previsão de chuva: ' + responseForecast.statusText);
@@ -318,7 +322,7 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
 
         for (let i = 0; i < dataForecast.list.length; i++) {
             const chuva = dataForecast.list[i].rain ? dataForecast.list[i].rain['3h'] : 0;
-            if (chuva > 1) { // Considerar apenas chuvas com mais de 1mm
+            if (chuva > milimetroschuva) {
                 let horaChuva = '';
                 const dataHoraChuva = new Date(dataForecast.list[i].dt_txt);
                 if (dataHoraChuva.toDateString() === new Date().toDateString()) {
@@ -335,19 +339,17 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
                 break;
             }
 
-            // Verificar e atualizar temperatura máxima prevista
             if (dataForecast.list[i].main.temp_max !== undefined) {
                 tempMaxPrevista = Math.max(tempMaxPrevista, dataForecast.list[i].main.temp_max);
             }
         }
 
-        // Se tempMaxPrevista ainda for muito negativo ou igual a mínima, ajustar
         if (tempMaxPrevista === Number.MIN_SAFE_INTEGER || tempMaxPrevista === tempMin) {
-            tempMaxPrevista = (parseFloat(tempMin) + 5).toFixed(1); // Definir um valor padrão maior que a mínima
+            tempMaxPrevista = (parseFloat(tempMin) + 5).toFixed(1);
         }
 
-        // Exibir previsão completa no resultado
-        const tempMaxPrevistaC = tempMaxPrevista.toFixed(1); // Converte para uma casa decimal
+
+        const tempMaxPrevistaC = tempMaxPrevista.toFixed(1);
         const weatherText = `${tipo === 'origem' ? 'Condições Atuais' : 'Condições na Chegada'}: ${weatherEmoji} ${weatherDescription}, mínima de ${tempMin}°C e máxima de ${tempMaxPrevistaC}°C. ${proximaChuva}`;
         document.getElementById(`weather${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).innerText = weatherText;
     } catch (error) {
@@ -370,8 +372,8 @@ function gerarImagem() {
 
     const cidadeOrigem = document.getElementById('cidadeOrigem').value.trim();
     const cidadeDestino = document.getElementById('cidadeDestino').value.trim();
-    const distancia = document.getElementById('distancia').innerText.trim().split(': ')[1]; // Apenas o valor
-    const valorFrete = document.getElementById('freteIdeal').innerText.trim().split(': ')[1]; // Apenas o valor
+    const distancia = document.getElementById('distancia').innerText.trim().split(': ')[1];
+    const valorFrete = document.getElementById('freteIdeal').innerText.trim().split(': ')[1];
 
     let climaOrigem = '';
     let climaDestino = '';
@@ -405,12 +407,12 @@ function gerarImagem() {
 
     html2canvas(resultadoDiv, {
         backgroundColor: '#FFFFFF',
-        scale: 2, // Adjusted scale for better resolution
+        scale: 2,
         onrendered: function(canvas) {
             const imgData = canvas.toDataURL("image/png");
             const link = document.createElement('a');
             link.href = imgData;
-            link.download = `${cidadeOrigem} x ${cidadeDestino}.png`; // Nome do arquivo ajustado
+            link.download = `${cidadeOrigem} x ${cidadeDestino}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

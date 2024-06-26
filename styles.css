@@ -58,7 +58,6 @@ button {
     border: none;
     cursor: pointer;
     font-weight: bold;
-    transition: background 0.3s;
 }
 
 button:hover {
@@ -210,7 +209,6 @@ footer {
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s;
 }
 
 .popup-content button:hover {
