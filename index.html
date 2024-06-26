@@ -25,8 +25,7 @@
             <label for="adicionarVolta">
                 <input type="checkbox" id="adicionarVolta"> Incluir Volta (Conteinerizada)
             </label>
-            <button type="button" onclick="calcularFrete()">Calcular</button>
-            <button type="button" onclick="gerarCotacao()">Gerar Cotação</button>            
+            <button type="button" onclick="calcularFrete()">Calcular</button>         
             <div class="error-message" id="error-message"></div>
         </form>
         <div class="city-names" id="cityNames"></div>
@@ -47,6 +46,7 @@
             <p id="lucroPorKm" class="result-item"></p>
             <p id="freteIdeal" class="result-item"></p>
             <p id="lucroPrejuizo" class="result-item"></p>
+            <button type="button" onclick="gerarCotacao()">Gerar Cotação</button>   
         </div>
     </main>
     <footer>
