@@ -6,6 +6,7 @@
     <title>MixFretes</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <header>#MixFretes</header>
@@ -25,6 +26,7 @@
                 <input type="checkbox" id="adicionarVolta"> Incluir Volta (Conteinerizada)
             </label>
             <button type="button" onclick="calcularFrete()">Calcular</button>
+            <button type="button" onclick="gerarCotacao()">Gerar Cotação</button>            
             <div class="error-message" id="error-message"></div>
         </form>
         <div class="city-names" id="cityNames"></div>
@@ -50,6 +52,24 @@
     <footer>
         <p>🍀 &copy; 2024 Mix Fretes. Todos os direitos reservados.</p>
     </footer>
+
+<!-- Popup Form -->
+<div id="popupForm" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h2>Informações adicionais</h2>
+        <label for="descricao">Descrição:</label>
+        <input type="text" id="descricao" required>
+        <label for="peso">Peso (kg):</label>
+        <input type="number" id="peso" required>
+        <label for="incluirClima">
+            <input type="checkbox" id="incluirClima"> Incluir Clima
+        </label>
+        <button type="button" onclick="gerarImagem()">Gerar</button>
+    </div>
+</div>
+
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -354,3 +354,75 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
         console.error('Erro ao obter previsão do tempo:', error);
     }
 }
+
+function openPopup() {
+    document.getElementById('popupForm').style.display = 'block';
+}
+
+function closePopup() {
+    document.getElementById('popupForm').style.display = 'none';
+}
+
+function gerarImagem() {
+    const descricao = document.getElementById('descricao').value;
+    const peso = document.getElementById('peso').value;
+    const incluirClima = document.getElementById('incluirClima').checked;
+
+    const cidadeOrigem = document.getElementById('cidadeOrigem').value.trim();
+    const cidadeDestino = document.getElementById('cidadeDestino').value.trim();
+    const distancia = document.getElementById('distancia').innerText.trim().split(': ')[1]; // Apenas o valor
+    const valorFrete = document.getElementById('freteIdeal').innerText.trim().split(': ')[1]; // Apenas o valor
+
+    let climaOrigem = '';
+    let climaDestino = '';
+
+    if (incluirClima) {
+        climaOrigem = document.getElementById('weatherOrigem').innerText.trim();
+        climaDestino = document.getElementById('weatherDestino').innerText.trim();
+    }
+
+    const dataAtual = new Date();
+    const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
+    const horaFormatada = dataAtual.toLocaleTimeString('pt-BR');
+
+    const resultadoHTML = `
+    <div style="text-align: center; background: white; width: 500px; height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        ${!incluirClima ? `<h1 style="color: #123354; margin-bottom: 10;">MixFretes</h1>` : ''}
+        ${incluirClima ? `<p style="margin: 15px 0;"><strong>Clima Origem:</strong> ${climaOrigem}</p><p style="margin: 10px 0;"><strong>Clima Destino:</strong> ${climaDestino}</p>` : ''}
+        <p style="margin: 12px 0;"><strong>Rota:</strong> ${cidadeOrigem} X ${cidadeDestino}</p>
+        <p style="margin: 12px 0;"><strong>Distância:</strong> ${distancia}</p>
+        <p style="margin: 12px 0;"><strong>Descrição:</strong> ${descricao}</p>
+        <p style="margin: 12px 0;"><strong>Peso:</strong> ${peso} kg</p>
+        <p style="margin: 12px 0;"><strong>Valor da Cotação:</strong> ${valorFrete}</p>
+        <p style="margin: 27px 0 10px; font-size: 12px; color: #555;">Esta cotação é apenas a simulação do frete para as localidades acima mencionadas, e podem sofrer reajustes ou alterações sem aviso prévio.</p>
+        <p style="margin-top: 10px; font-size: 12px; color: #555;">Gerado por: MixFretes, ${dataFormatada} às ${horaFormatada}</p>
+    </div>
+`;
+
+    const resultadoDiv = document.createElement('div');
+    resultadoDiv.innerHTML = resultadoHTML;
+    document.body.appendChild(resultadoDiv);
+
+    html2canvas(resultadoDiv, {
+        backgroundColor: '#FFFFFF',
+        scale: 2, // Scale for better resolution
+        onrendered: function(canvas) {
+            const imgData = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            link.href = imgData;
+            link.download = `${cidadeOrigem} x ${cidadeDestino}.png`; // Nome do arquivo ajustado
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            document.body.removeChild(resultadoDiv);
+        }
+    });
+
+    closePopup();
+}
+
+function gerarCotacao() {
+    calcularFrete();
+    openPopup();
+}
+
