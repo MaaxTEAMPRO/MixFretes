@@ -18,17 +18,17 @@
             <input type="text" id="cidadeDestino" required>
             <label for="mediaConsumo">Média de Consumo (km/l): (Padrão = 2,2)</label>
             <input type="number" id="mediaConsumo" step="0.01" required>
-            <label for="custoDiesel">Custo do Diesel (R$/l): (Padrão = 6)</label>
+            <label for="custoDiesel">Custo do Diesel (R$/l): (Padrão = 6,0)</label>
             <input type="number" id="custoDiesel" step="0.01" required>
-            <label for="valorFrete">Valor do Frete (Total ou por Tonelada)(R$):</label>
+            <label for="valorFrete">Valor do Frete (Total ou por Tonelada, Em R$):</label>
             <input type="number" id="valorFrete" step="0.01" required>
-            <label for="pesoToneladas">Peso líquido em toneladas (Granel) (Opcional):</label>
+            <label for="pesoToneladas">Se Granel, Peso líquido em toneladas (Opcional):</label>
             <input type="number" id="pesoToneladas" step="0.01">
             <label for="adicionarVolta">
                 <input type="checkbox" id="adicionarVolta"> Incluir Volta (Conteinerizada)
             </label>
             <label for="cargaGranel">
-                <input type="checkbox" id="cargaGranel"> Carga Granel por Ton
+                <input type="checkbox" id="cargaGranel"> Carga Granel (por Toneladas)
             </label>
             <button type="button" onclick="calcularFrete()">Calcular</button>
             <div class="error-message" id="error-message"></div>
