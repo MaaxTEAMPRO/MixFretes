@@ -16,19 +16,19 @@
             <input type="text" id="cidadeOrigem" required>
             <label for="cidadeDestino">Cidade de Destino:</label>
             <input type="text" id="cidadeDestino" required>
-            <label for="mediaConsumo">Média de Consumo (km/l): (Padrão = 2)</label>
+            <label for="mediaConsumo">Média de Consumo (km/l): (Padrão = 2,2)</label>
             <input type="number" id="mediaConsumo" step="0.01" required>
-            <label for="custoDiesel">Custo do Diesel (R$/l): (Padrão = 5.50)</label>
+            <label for="custoDiesel">Custo do Diesel (R$/l): (Padrão = 6)</label>
             <input type="number" id="custoDiesel" step="0.01" required>
-            <label for="valorFrete">Valor do Frete (R$):</label>
+            <label for="valorFrete">Valor do Frete (Total ou por Tonelada)(R$):</label>
             <input type="number" id="valorFrete" step="0.01" required>
-            <label for="pesoToneladas">Peso líquido em toneladas (Granel):</label>
+            <label for="pesoToneladas">Peso líquido em toneladas (Granel) (Opcional):</label>
             <input type="number" id="pesoToneladas" step="0.01">
             <label for="adicionarVolta">
                 <input type="checkbox" id="adicionarVolta"> Incluir Volta (Conteinerizada)
             </label>
             <label for="cargaGranel">
-                <input type="checkbox" id="cargaGranel"> Carga Granel/Ton
+                <input type="checkbox" id="cargaGranel"> Carga Granel por Ton
             </label>
             <button type="button" onclick="calcularFrete()">Calcular</button>
             <div class="error-message" id="error-message"></div>
@@ -52,6 +52,17 @@
             <p id="freteIdeal" class="result-item"></p>
             <p id="lucroPrejuizo" class="result-item"></p>
             <button type="button" onclick="gerarCotacao()">Gerar Cotação</button>
+        </div>
+        <div id="instructions" class="instructions">
+            <div class="instructions-header">
+                <span>Como o MixFretes funciona</span>
+                <i class="fas fa-chevron-down" id="instructions-icon"></i>
+            </div>
+            <div class="instructions-content" id="instructions-content" style="display: none;">
+                <p>O MixFretes calcula o valor ideal do frete baseado nos dados fornecidos no formulário.</p>
+                <p>Nosso objetivo é fornecer uma estimativa precisa considerando os custos com combustível, manutenção, e outros fatores importantes para o transporte rodoviário.</p>
+                <p><strong>Política de Privacidade:</strong> O MixFretes é um projeto open source criado com o intuito de aprendizado por parte do seu time de desenvolvimento. Todos os dados são aproximados, podendo não ser ideais devido à constante atualização de preços. Considere isso ao utilizar o serviço. O projeto MixFretes se isenta de qualquer responsabilidade, e ao utilizar você concorda com nossa política de privacidade.</p>
+            </div>
         </div>
     </main>
     <footer>

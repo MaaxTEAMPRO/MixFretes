@@ -215,3 +215,30 @@ footer {
 .popup-content button:hover {
     background: #20c2fc;
 }
+
+/* Instructions section */
+.instructions {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.instructions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e9ecf1;
+    color: #48617c;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.instructions-content {
+    display: none;
+    padding: 10px;
+    border: 1px solid #48617c;
+    border-radius: 8px;
+    background-color: #e9ecf1;
+    color: #123354;
+}

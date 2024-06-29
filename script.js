@@ -8,6 +8,29 @@ const seguroImprevistos = 200; // R$
 const manutencaoKm = 0.32; //custo manutencao por km
 const custoPneusKm = 0.58; //custo pneus por km
 
+document.addEventListener('DOMContentLoaded', () => {
+    loadFromLocalStorage();
+
+    document.getElementById('freteForm').addEventListener('input', saveToLocalStorage);
+    document.getElementById('adicionarVolta').addEventListener('change', validarCheckboxes);
+    document.getElementById('cargaGranel').addEventListener('change', validarCheckboxes);
+    document.querySelector('.instructions-header').addEventListener('click', toggleInstructions);
+});
+
+function toggleInstructions() {
+    const instructionsContent = document.getElementById('instructions-content');
+    const instructionsIcon = document.getElementById('instructions-icon');
+    if (instructionsContent.style.display === 'none' || instructionsContent.style.display === '') {
+        instructionsContent.style.display = 'block';
+        instructionsIcon.classList.remove('fa-chevron-down');
+        instructionsIcon.classList.add('fa-chevron-up');
+    } else {
+        instructionsContent.style.display = 'none';
+        instructionsIcon.classList.remove('fa-chevron-up');
+        instructionsIcon.classList.add('fa-chevron-down');
+    }
+}
+
 function saveToLocalStorage() {
     const formElements = document.querySelectorAll('#freteForm input, #freteForm checkbox');
     formElements.forEach(element => {
@@ -27,12 +50,6 @@ function loadFromLocalStorage() {
         }
     });
 }
-
-document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
-document.getElementById('freteForm').addEventListener('input', saveToLocalStorage);
-
-document.getElementById('adicionarVolta').addEventListener('change', validarCheckboxes);
-document.getElementById('cargaGranel').addEventListener('change', validarCheckboxes);
 
 function validarCheckboxes() {
     const adicionarVolta = document.getElementById('adicionarVolta').checked;
@@ -63,41 +80,51 @@ async function calcularFrete() {
         return;
     }
 
-    const origemCoords = await geocodificarCidade(cidadeOrigem);
-    const destinoCoords = await geocodificarCidade(cidadeDestino);
+    try {
+        const [origemCoords, destinoCoords] = await Promise.all([
+            geocodificarCidade(cidadeOrigem),
+            geocodificarCidade(cidadeDestino)
+        ]);
 
-    if (!origemCoords || !destinoCoords) {
-        exibirMensagemErro('Cidade de origem ou destino não encontrada.');
-        return;
-    }
-
-    const distanciaKm = await calcularDistanciaRodoviaria(origemCoords, destinoCoords);
-    if (distanciaKm !== null) {
-        exibirCabecalhoResultado(cidadeOrigem, cidadeDestino);
-        calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, seguroImprevistos, adicionarVolta, cargaGranel, pesoToneladas);
-        await exibirPrevisaoCompleta(cidadeOrigem, 'origem');
-        await exibirPrevisaoCompleta(cidadeDestino, 'destino');
-
-        let tempoViagemHoras = Math.floor(distanciaKm / velocidadeMedia);
-        let tempoViagemMinutos = Math.round((distanciaKm / velocidadeMedia - tempoViagemHoras) * 60);
-
-        if (adicionarVolta) {
-            tempoViagemHoras *= 2;
-            tempoViagemMinutos *= 2;
-
-            if (tempoViagemMinutos >= 60) {
-                tempoViagemHoras += Math.floor(tempoViagemMinutos / 60);
-                tempoViagemMinutos = tempoViagemMinutos % 60;
-            }
+        if (!origemCoords || !destinoCoords) {
+            exibirMensagemErro('Cidade de origem ou destino não encontrada.');
+            return;
         }
 
-        const tempoViagemText = `Tempo de Viagem: ${tempoViagemHoras} horas e ${tempoViagemMinutos} minutos`;
-        document.getElementById('tempoViagem').innerText = tempoViagemText;
+        const distanciaKm = await calcularDistanciaRodoviaria(origemCoords, destinoCoords);
+        if (distanciaKm !== null) {
+            exibirCabecalhoResultado(cidadeOrigem, cidadeDestino);
+            calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, seguroImprevistos, adicionarVolta, cargaGranel, pesoToneladas);
+            await Promise.all([
+                exibirPrevisaoCompleta(cidadeOrigem, 'origem'),
+                exibirPrevisaoCompleta(cidadeDestino, 'destino')
+            ]);
 
-    } else {
-        exibirMensagemErro('Erro ao calcular a distância.');
+            let tempoViagemHoras = Math.floor(distanciaKm / velocidadeMedia);
+            let tempoViagemMinutos = Math.round((distanciaKm / velocidadeMedia - tempoViagemHoras) * 60);
+
+            if (adicionarVolta) {
+                tempoViagemHoras *= 2;
+                tempoViagemMinutos *= 2;
+
+                if (tempoViagemMinutos >= 60) {
+                    tempoViagemHoras += Math.floor(tempoViagemMinutos / 60);
+                    tempoViagemMinutos = tempoViagemMinutos % 60;
+                }
+            }
+
+            const tempoViagemText = `Tempo de Viagem: ${tempoViagemHoras} horas e ${tempoViagemMinutos} minutos`;
+            document.getElementById('tempoViagem').innerText = tempoViagemText;
+
+        } else {
+            exibirMensagemErro('Erro ao calcular a distância.');
+        }
+    } catch (error) {
+        console.error('Erro ao calcular frete:', error);
+        exibirMensagemErro('Erro ao calcular frete. Por favor, tente novamente.');
     }
 }
+
 
 function exibirCabecalhoResultado(origem, destino) {
     const cabecalho = `${origem.toUpperCase()} X ${destino.toUpperCase()}`;
@@ -234,7 +261,7 @@ ${weatherOrigem}
 ${weatherDestino}
 
 Valor do frete: ${freteTotal}
-${pesoToneladas ? `Toneladas: ${pesoToneladas} ` : ''}
+${pesoToneladas ? `Toneladas: ${pesoToneladas}` : ''}
 ${distancia}
 ${tempoViagem}
 ${custoDieselResultado}
