@@ -1,4 +1,3 @@
-
 // Variáveis para manutenção do código:
 const openRouteServiceKey = '5b3ce3597851110001cf6248a7350e10fe0047d5b435df18da0ca0ab';
 const openWeatherMapKey = '882a7c86ee232f1f5a53433800f48151';
@@ -32,6 +31,21 @@ function loadFromLocalStorage() {
 document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
 document.getElementById('freteForm').addEventListener('input', saveToLocalStorage);
 
+document.getElementById('adicionarVolta').addEventListener('change', validarCheckboxes);
+document.getElementById('cargaGranel').addEventListener('change', validarCheckboxes);
+
+function validarCheckboxes() {
+    const adicionarVolta = document.getElementById('adicionarVolta').checked;
+    const cargaGranel = document.getElementById('cargaGranel').checked;
+    if (adicionarVolta && cargaGranel) {
+        exibirMensagemErro('Você só pode marcar uma opção por vez.');
+        document.getElementById('adicionarVolta').checked = false;
+        document.getElementById('cargaGranel').checked = false;
+    } else {
+        limparMensagensErro();
+    }
+}
+
 async function calcularFrete() {
     limparMensagensErro();
 
@@ -41,8 +55,10 @@ async function calcularFrete() {
     const custoDiesel = parseFloat(document.getElementById('custoDiesel').value);
     const valorFrete = parseFloat(document.getElementById('valorFrete').value);
     const adicionarVolta = document.getElementById('adicionarVolta').checked;
+    const cargaGranel = document.getElementById('cargaGranel').checked;
+    const pesoToneladas = parseFloat(document.getElementById('pesoToneladas').value);
 
-    if (!cidadeOrigem || !cidadeDestino || isNaN(mediaConsumo) || isNaN(custoDiesel) || isNaN(valorFrete)) {
+    if (!cidadeOrigem || !cidadeDestino || isNaN(mediaConsumo) || isNaN(custoDiesel) || isNaN(valorFrete) || (cargaGranel && isNaN(pesoToneladas))) {
         exibirMensagemErro('Por favor, preencha todos os campos corretamente.');
         return;
     }
@@ -58,7 +74,7 @@ async function calcularFrete() {
     const distanciaKm = await calcularDistanciaRodoviaria(origemCoords, destinoCoords);
     if (distanciaKm !== null) {
         exibirCabecalhoResultado(cidadeOrigem, cidadeDestino);
-        calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, seguroImprevistos, adicionarVolta);
+        calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, seguroImprevistos, adicionarVolta, cargaGranel, pesoToneladas);
         await exibirPrevisaoCompleta(cidadeOrigem, 'origem');
         await exibirPrevisaoCompleta(cidadeDestino, 'destino');
 
@@ -146,21 +162,32 @@ async function calcularDistanciaRodoviaria(origemCoords, destinoCoords) {
     }
 }
 
-function calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, seguroImprevistos, adicionarVolta) {
+function calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, seguroImprevistos, adicionarVolta, cargaGranel, pesoToneladas) {
     if (adicionarVolta) {
         distanciaKm *= 2;
     }
+
     const custoComDiesel = (distanciaKm / mediaConsumo) * custoDiesel;
     const custoComManutencao = distanciaKm * manutencaoKm;
     const custoComPneus = distanciaKm * custoPneusKm;
     const valorTotalDespesas = custoComDiesel + custoComManutencao + custoComPneus + seguroImprevistos;
-    const lucroPrejuizo = valorFrete - valorTotalDespesas;
-    const lucroPorKm = lucroPrejuizo / distanciaKm;
-
     const lpkmIdeal = distanciaKm <= 400 ? 2.5 : 2.0;
     const freteIdeal = valorTotalDespesas + (lpkmIdeal * distanciaKm);
+    let lucroPrejuizo;
+    let lucroPorKm;
+    let freteTotal;
 
-    document.getElementById('precoFrete').innerText = `Preço do Frete: R$ ${valorFrete.toFixed(2)}`;
+    if (cargaGranel) {
+        freteTotal = valorFrete * pesoToneladas;
+        lucroPrejuizo = freteTotal - valorTotalDespesas;
+        lucroPorKm = lucroPrejuizo / distanciaKm;
+    } else {
+        freteTotal = valorFrete;
+        lucroPrejuizo = valorFrete - valorTotalDespesas;
+        lucroPorKm = lucroPrejuizo / distanciaKm;
+    }
+
+    document.getElementById('precoFrete').innerText = `Preço do Frete: R$ ${freteTotal.toFixed(2)}`;
     document.getElementById('distancia').innerText = `Distância: ${distanciaKm.toFixed(2)} km`;
     document.getElementById('custoDieselResultado').innerText = `Custo com Diesel: R$ ${custoComDiesel.toFixed(2)}`;
     document.getElementById('custoManutencao').innerText = `Custo com Manutenção: R$ ${custoComManutencao.toFixed(2)}`;
@@ -182,6 +209,7 @@ function calcularCustos(distanciaKm, mediaConsumo, custoDiesel, valorFrete, segu
 function copiarResultado() {
     const cityNames = document.getElementById('cityNames').innerText.trim();
     const adicionarVolta = document.getElementById('adicionarVolta').checked ? 'Sim' : 'Não';
+    const cargaGranel = document.getElementById('cargaGranel').checked ? 'Sim' : 'Não';
     const distancia = document.getElementById('distancia').innerText.trim();
     const custoDieselResultado = document.getElementById('custoDieselResultado').innerText.trim();
     const custoManutencao = document.getElementById('custoManutencao').innerText.trim();
@@ -194,14 +222,19 @@ function copiarResultado() {
     const weatherOrigem = document.getElementById('weatherOrigem').innerText.trim();
     const weatherDestino = document.getElementById('weatherDestino').innerText.trim();
     const tempoViagem = document.getElementById('tempoViagem').innerText.trim();
+    const freteTotal = document.getElementById('precoFrete').innerText.trim().split(': ')[1];
+    const pesoToneladas = document.getElementById('pesoToneladas').value ? document.getElementById('pesoToneladas').value.trim() : null;
 
     const resultadoText = `
 ${cityNames}
 Container ida+volta: ${adicionarVolta}
+Granel ou por toneladas: ${cargaGranel}
 
 ${weatherOrigem}
 ${weatherDestino}
 
+Valor do frete: ${freteTotal}
+${pesoToneladas ? `Toneladas: ${pesoToneladas} ` : ''}
 ${distancia}
 ${tempoViagem}
 ${custoDieselResultado}
@@ -347,7 +380,6 @@ async function exibirPrevisaoCompleta(cidade, tipo) {
         if (tempMaxPrevista === Number.MIN_SAFE_INTEGER || tempMaxPrevista === tempMin) {
             tempMaxPrevista = (parseFloat(tempMin) + 5).toFixed(1);
         }
-
 
         const tempMaxPrevistaC = tempMaxPrevista.toFixed(1);
         const weatherText = `${tipo === 'origem' ? 'Condições Atuais' : 'Condições na Chegada'}: ${weatherEmoji} ${weatherDescription}, mínima de ${tempMin}°C e máxima de ${tempMaxPrevistaC}°C. ${proximaChuva}`;
