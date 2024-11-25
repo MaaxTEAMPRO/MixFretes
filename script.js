@@ -2,7 +2,7 @@
 const openRouteServiceKey = '5b3ce3597851110001cf6248a7350e10fe0047d5b435df18da0ca0ab';
 const openWeatherMapKey = '882a7c86ee232f1f5a53433800f48151';
 
-const velocidadeMedia = 38; // Km/h
+const velocidadeMedia = 37; // Km/h
 const milimetroschuva = 1;  // Considerar apenas chuvas com mais de 1mm
 const seguroImprevistos = 200; // R$
 const manutencaoKm = 0.32; //custo manutencao por km
