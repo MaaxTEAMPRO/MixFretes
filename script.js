@@ -5,7 +5,7 @@ const openWeatherMapKey = '882a7c86ee232f1f5a53433800f48151';
 const velocidadeMedia = 37; // Km/h
 const milimetroschuva = 1;  // Considerar apenas chuvas com mais de 1mm
 const seguroImprevistos = 200; // R$
-const manutencaoKm = 0.50; //custo manutencao por km corrigido com inflação em 10 anos, anterior era 0.32
+const manutencaoKm = 0.46; //custo manutencao por km corrigido, antes era 0.32
 const custoPneusKm = 0.58; //custo pneus por km
 
 document.addEventListener('DOMContentLoaded', () => {
