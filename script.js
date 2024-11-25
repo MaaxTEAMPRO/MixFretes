@@ -6,7 +6,7 @@ const velocidadeMedia = 37; // Km/h
 const milimetroschuva = 1;  // Considerar apenas chuvas com mais de 1mm
 const seguroImprevistos = 200; // R$
 const manutencaoKm = 0.46; //custo manutencao por km corrigido, antes era 0.32
-const custoPneusKm = 0.58; //custo pneus por km
+const custoPneusKm = 0.63; //custo pneus por km, antes 0,58 mas corrigido pra margem de segurança
 
 document.addEventListener('DOMContentLoaded', () => {
     loadFromLocalStorage();
