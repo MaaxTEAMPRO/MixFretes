@@ -3,88 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MixFretes</title>
+    <title>MixFretes - Calculadora de Fretes Inteligente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <header>MixFretes</header>
-    <main>
-        <form id="freteForm">
-            <label for="cidadeOrigem">Cidade de Origem:</label>
-            <input type="text" id="cidadeOrigem" required>
-            <label for="cidadeDestino">Cidade de Destino:</label>
-            <input type="text" id="cidadeDestino" required>
-            <label for="mediaConsumo">Média de Consumo (km/l): (Padrão = 2,2)</label>
-            <input type="number" id="mediaConsumo" step="0.01" required>
-            <label for="custoDiesel">Custo do Diesel (R$/l): (Padrão = 6,0)</label>
-            <input type="number" id="custoDiesel" step="0.01" required>
-            <label for="valorFrete">Valor do Frete (Total ou por Tonelada, Em R$):</label>
-            <input type="number" id="valorFrete" step="0.01" required>
-            <label for="pesoToneladas">Se Granel, Peso líquido em toneladas (Opcional):</label>
-            <input type="number" id="pesoToneladas" step="0.01">
-            <label for="adicionarVolta">
-                <input type="checkbox" id="adicionarVolta"> Incluir Volta (Conteinerizada)
-            </label>
-            <label for="cargaGranel">
-                <input type="checkbox" id="cargaGranel"> Carga Granel (por Toneladas)
-            </label>
-            <button type="button" onclick="calcularFrete()">Calcular</button>
-            <div class="error-message" id="error-message"></div>
-        </form>
-        <div class="city-names" id="cityNames"></div>
-        <div id="weatherOrigem"></div>
-        <div id="rainOrigem"></div>
-        <div id="weatherDestino"></div>
-        <div id="rainDestino"></div>
-        <div id="resultado">
-            <button class="copy-button" onclick="copiarResultado()"><i class="fas fa-copy"></i></button>
-            <p id="precoFrete" class="result-item"></p>
-            <p id="distancia" class="result-item"></p>
-            <p id="tempoViagem" class="result-item"></p>
-            <p id="custoDieselResultado" class="result-item"></p>
-            <p id="custoManutencao" class="result-item"></p>
-            <p id="custoPneus" class="result-item"></p>
-            <p id="seguroImprevistos" class="result-item"></p>
-            <p id="valorTotalDespesas" class="result-item"></p>
-            <p id="lucroPorKm" class="result-item"></p>
-            <p id="freteIdeal" class="result-item"></p>
-            <p id="lucroPrejuizo" class="result-item"></p>
-            <button type="button" onclick="gerarCotacao()">Gerar Cotação</button>
-        </div>
-        <div id="instructions" class="instructions">
-            <div class="instructions-header">
-                <span>Como o MixFretes funciona</span>
-                <i class="fas fa-chevron-down" id="instructions-icon"></i>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-container">
+                <i class="fas fa-truck-moving logo-icon"></i>
+                <h1>Mix<span>Fretes</span></h1>
             </div>
-            <div class="instructions-content" id="instructions-content" style="display: none;">
-                <p>O MixFretes calcula o valor ideal do frete baseado nos dados fornecidos no formulário.</p>
-                <p>Nosso objetivo é fornecer uma estimativa precisa considerando os custos com combustível, manutenção, e outros fatores importantes para o transporte rodoviário.</p>
-                <p><strong>Política de Privacidade:</strong> O MixFretes é um projeto open source criado com o intuito de aprendizado por parte do seu time de desenvolvimento. Todos os dados são aproximados, podendo não ser ideais devido à constante atualização de preços. Considere isso ao utilizar o serviço. O projeto MixFretes se isenta de qualquer responsabilidade, e ao utilizar você concorda com nossa política de privacidade.</p>
+            <p class="tagline">Calculadora inteligente para fretes rodoviários</p>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <main class="app-main">
+            <section class="calculator-section">
+                <div class="form-container">
+                    <h2><i class="fas fa-calculator"></i> Dados do Frete</h2>
+                    <form id="freteForm">
+                        <div class="form-group">
+                            <label for="cidadeOrigem"><i class="fas fa-map-marker-alt"></i> Origem</label>
+                            <input type="text" id="cidadeOrigem" placeholder="Ex: São Paulo" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cidadeDestino"><i class="fas fa-map-marker"></i> Destino</label>
+                            <input type="text" id="cidadeDestino" placeholder="Ex: Rio de Janeiro" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label for="mediaConsumo"><i class="fas fa-gas-pump"></i> Consumo (km/l)</label>
+                                <input type="number" id="mediaConsumo" step="0.01" value="2.2" required>
+                                <span class="input-hint">Padrão: 2.2</span>
+                            </div>
+                            
+                            <div class="form-group half-width">
+                                <label for="custoDiesel"><i class="fas fa-dollar-sign"></i> Diesel (R$/l)</label>
+                                <input type="number" id="custoDiesel" step="0.01" value="6.0" required>
+                                <span class="input-hint">Padrão: 6.0</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="valorFrete"><i class="fas fa-money-bill-wave"></i> Valor do Frete (R$)</label>
+                            <input type="number" id="valorFrete" step="0.01" placeholder="Valor total ou por tonelada" required>
+                        </div>
+
+                        <div class="form-group" id="pesoContainer" style="display: none;">
+                            <label for="pesoToneladas"><i class="fas fa-weight-hanging"></i> Peso (toneladas)</label>
+                            <input type="number" id="pesoToneladas" step="0.01" placeholder="Apenas para carga granel">
+                        </div>
+
+                        <div class="options-container">
+                            <label class="option-checkbox">
+                                <input type="checkbox" id="adicionarVolta">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-undo"></i> Incluir Volta (Conteinerizada)
+                            </label>
+                            
+                            <label class="option-checkbox">
+                                <input type="checkbox" id="cargaGranel">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-boxes"></i> Carga Granel
+                            </label>
+                        </div>
+
+                        <button type="button" class="calculate-btn" onclick="calcularFrete()">
+                            <i class="fas fa-calculator"></i> Calcular Frete
+                        </button>
+
+                        <div class="error-message" id="error-message"></div>
+                    </form>
+                </div>
+
+                <div class="weather-container">
+                    <div class="weather-card" id="weatherOrigem"></div>
+                    <div class="weather-card" id="weatherDestino"></div>
+                </div>
+            </section>
+
+            <section class="results-section" id="resultado">
+                <div class="results-header">
+                    <h3 id="cityNames"></h3>
+                    <button class="copy-button" onclick="copiarResultado()">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-icon"><i class="fas fa-road"></i></div>
+                        <p id="distancia" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-icon"><i class="fas fa-clock"></i></div>
+                        <p id="tempoViagem" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-icon"><i class="fas fa-gas-pump"></i></div>
+                        <p id="custoDieselResultado" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-icon"><i class="fas fa-tools"></i></div>
+                        <p id="custoManutencao" class="result-item"></p>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-icon"><i class="fas fa-circle-notch"></i></div>
+                        <p id="custoPneus" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-icon"><i class="fas fa-shield-alt"></i></div>
+                        <p id="seguroImprevistos" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card highlight">
+                        <div class="result-icon"><i class="fas fa-receipt"></i></div>
+                        <p id="precoFrete" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card highlight">
+                        <div class="result-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                        <p id="valorTotalDespesas" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card highlight">
+                        <div class="result-icon"><i class="fas fa-chart-line"></i></div>
+                        <p id="lucroPorKm" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card highlight">
+                        <div class="result-icon"><i class="fas fa-bullseye"></i></div>
+                        <p id="freteIdeal" class="result-item"></p>
+                    </div>
+                    
+                    <div class="result-card full-width" id="lucroPrejuizoCard">
+                        <div class="result-icon"><i class="fas fa-coins"></i></div>
+                        <p id="lucroPrejuizo" class="result-item"></p>
+                    </div>
+                </div>
+
+                <button type="button" class="quote-btn" onclick="gerarCotacao()">
+                    <i class="fas fa-file-alt"></i> Gerar Cotação
+                </button>
+            </section>
+
+            <section class="info-section">
+                <div class="accordion">
+                    <button class="accordion-header" onclick="toggleInstructions()" aria-expanded="false" aria-controls="instructions-content">
+                        <h3><i class="fas fa-question-circle"></i> Como funciona o MixFretes</h3>
+                        <i class="fas fa-chevron-down" id="instructions-icon"></i>
+                    </button>
+                    <div class="accordion-content" id="instructions-content" role="region">
+                        <p>O MixFretes calcula o valor ideal do frete considerando:</p>
+                        <ul>
+                            <li><i class="fas fa-gas-pump"></i> Custo com combustível</li>
+                            <li><i class="fas fa-tools"></i> Manutenção do veículo</li>
+                            <li><i class="fas fa-tire"></i> Desgaste de pneus</li>
+                            <li><i class="fas fa-umbrella"></i> Margem para imprevistos</li>
+                            <li><i class="fas fa-cloud-sun-rain"></i> Condições climáticas</li>
+                        </ul>
+                        <div class="disclaimer">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Aviso importante</h4>
+                            <p>Os resultados são estimativas baseadas nos dados fornecidos. Valores reais podem variar devido a fatores como alterações nos preços de combustível, pedágios não considerados e condições de tráfego.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p><i class="fas fa-truck"></i> MixFretes &copy; 2024 - Calculadora inteligente para transportadores</p>
+            <p class="version">v2.0.0</p>
+        </footer>
+
+        <div id="popupForm" class="popup-overlay">
+            <div class="popup-container">
+                <div class="popup-header">
+                    <h3><i class="fas fa-file-invoice-dollar"></i> Gerar Cotação</h3>
+                    <button class="close-btn" onclick="closePopup()">&times;</button>
+                </div>
+                <div class="popup-body">
+                    <!-- Seção Cliente -->
+                    <div class="section-header">
+                        <i class="fas fa-user-tie"></i>
+                        <h4>Informações do Cliente</h4>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label for="cliente"><i class="fas fa-user"></i> Cliente</label>
+                            <input type="text" id="cliente" placeholder="Nome do cliente ou empresa">
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="contatoCliente"><i class="fas fa-phone-alt"></i> Contato</label>
+                            <input type="text" id="contatoCliente" placeholder="Telefone ou e-mail">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="enderecoCliente"><i class="fas fa-map-marker-alt"></i> Endereço</label>
+                            <textarea id="enderecoCliente" placeholder="Endereço completo" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="dadosAdicionaisCliente"><i class="fas fa-info-circle"></i> Observações</label>
+                            <textarea id="dadosAdicionaisCliente" placeholder="Informações adicionais sobre o cliente" rows="2"></textarea>
+                        </div>
+                    </div>
+        
+                    <!-- Seção Frete -->
+                    <div class="section-header" style="margin-top: 1.5rem;">
+                        <i class="fas fa-truck"></i>
+                        <h4>Detalhes do Frete</h4>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label for="descricaoCarga"><i class="fas fa-box-open"></i> Descrição da Carga</label>
+                            <input type="text" id="descricaoCarga" placeholder="Tipo de carga" required>
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="enderecoEntrega"><i class="fas fa-map-pin"></i> Endereço de Entrega</label>
+                            <input type="text" id="enderecoEntrega" placeholder="Local de entrega">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="informacoesComplementares"><i class="fas fa-clipboard-list"></i> Informações Complementares</label>
+                            <textarea id="informacoesComplementares" placeholder="Detalhes importantes sobre o frete" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="options-row">
+                        <label class="option-checkbox popup-checkbox">
+                            <input type="checkbox" id="incluirClima">
+                            <span class="checkmark"></span>
+                            <i class="fas fa-cloud-sun"></i> Incluir previsão do tempo
+                        </label>
+                        <label class="option-checkbox popup-checkbox">
+                            <input type="checkbox" id="incluirTempoEntrega" checked>
+                            <span class="checkmark"></span>
+                            <i class="fas fa-clock"></i> Incluir tempo estimado
+                        </label>
+                    </div>
+                </div>
+                <div class="popup-footer">
+                    <button class="cancel-btn" onclick="closePopup()">Cancelar</button>
+                    <button class="generate-btn" onclick="gerarImagem()"><i class="fas fa-file-image"></i> Gerar Cotação</button>
+                </div>
             </div>
         </div>
-    </main>
-    <footer>
-        <p>🍀 &copy; 2024 Mix Fretes. Todos os direitos reservados.</p>
-    </footer>
-
-    <!-- Popup Form -->
-    <div id="popupForm" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closePopup()">&times;</span>
-            <h2>Informações adicionais</h2>
-            <label for="descricao">Descrição:</label>
-            <input type="text" id="descricao" required>
-            <label for="peso">Peso (kg):</label>
-            <input type="number" id="peso" required>
-            <label for="incluirClima">
-                <input type="checkbox" id="incluirClima"> Incluir Clima
-            </label>
-            <button type="button" onclick="gerarImagem()">Gerar</button>
-        </div>
-    </div>
-
     <script src="script.js"></script>
 </body>
 </html>
