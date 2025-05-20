@@ -1,0 +1,244 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+header {
+    width: 100%;
+    background-color: #123354;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.068);
+}
+
+main {
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 20px 0;
+    flex: 1;
+    box-sizing: border-box;
+}
+
+form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #123354;
+}
+
+input, button {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    background: linear-gradient(to right, #0496df, #20c2fc);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #20c2fc;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    display: none;
+}
+
+#resultado {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #007BFF;
+    background-color: #e9f4ff;
+    display: none;
+    position: relative;
+    border-radius: 8px;
+}
+
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.copy-button:hover {
+    background-color: #0056b3;
+}
+
+.result-item {
+    margin-bottom: 10px;
+}
+
+.result-item.positivo {
+    color: green;
+}
+
+.result-item.negativo {
+    color: red;
+}
+
+.city-names {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #15a6f0;
+}
+
+#weatherOrigem, #weatherDestino, #rainOrigem, #rainDestino {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+footer {
+    background-color: #e9ecf1;
+    color: #48617c;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    margin-top: auto;
+    box-sizing: border-box;
+}
+
+/* Popup container */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 9;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+/* Popup content */
+.popup-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.popup-content label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.popup-content input[type="text"],
+.popup-content input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.popup-content input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.popup-content button {
+    padding: 10px 20px;
+    background: linear-gradient(to right, #0496df, #20c2fc);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background: #20c2fc;
+}
+
+/* Instructions section */
+.instructions {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.instructions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e9ecf1;
+    color: #48617c;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.instructions-content {
+    display: none;
+    padding: 10px;
+    border: 1px solid #48617c;
+    border-radius: 8px;
+    background-color: #e9ecf1;
+    color: #123354;
+}

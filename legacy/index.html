@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MixFretes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>MixFretes</header>
+    <main>
+        <form id="freteForm">
+            <label for="cidadeOrigem">Cidade de Origem:</label>
+            <input type="text" id="cidadeOrigem" required>
+            <label for="cidadeDestino">Cidade de Destino:</label>
+            <input type="text" id="cidadeDestino" required>
+            <label for="mediaConsumo">Média de Consumo (km/l): (Padrão = 2,2)</label>
+            <input type="number" id="mediaConsumo" step="0.01" required>
+            <label for="custoDiesel">Custo do Diesel (R$/l): (Padrão = 6,0)</label>
+            <input type="number" id="custoDiesel" step="0.01" required>
+            <label for="valorFrete">Valor do Frete (Total ou por Tonelada, Em R$):</label>
+            <input type="number" id="valorFrete" step="0.01" required>
+            <label for="pesoToneladas">Se Granel, Peso líquido em toneladas (Opcional):</label>
+            <input type="number" id="pesoToneladas" step="0.01">
+            <label for="adicionarVolta">
+                <input type="checkbox" id="adicionarVolta"> Incluir Volta (Conteinerizada)
+            </label>
+            <label for="cargaGranel">
+                <input type="checkbox" id="cargaGranel"> Carga Granel (por Toneladas)
+            </label>
+            <button type="button" onclick="calcularFrete()">Calcular</button>
+            <div class="error-message" id="error-message"></div>
+        </form>
+        <div class="city-names" id="cityNames"></div>
+        <div id="weatherOrigem"></div>
+        <div id="rainOrigem"></div>
+        <div id="weatherDestino"></div>
+        <div id="rainDestino"></div>
+        <div id="resultado">
+            <button class="copy-button" onclick="copiarResultado()"><i class="fas fa-copy"></i></button>
+            <p id="precoFrete" class="result-item"></p>
+            <p id="distancia" class="result-item"></p>
+            <p id="tempoViagem" class="result-item"></p>
+            <p id="custoDieselResultado" class="result-item"></p>
+            <p id="custoManutencao" class="result-item"></p>
+            <p id="custoPneus" class="result-item"></p>
+            <p id="seguroImprevistos" class="result-item"></p>
+            <p id="valorTotalDespesas" class="result-item"></p>
+            <p id="lucroPorKm" class="result-item"></p>
+            <p id="freteIdeal" class="result-item"></p>
+            <p id="lucroPrejuizo" class="result-item"></p>
+            <button type="button" onclick="gerarCotacao()">Gerar Cotação</button>
+        </div>
+        <div id="instructions" class="instructions">
+            <div class="instructions-header">
+                <span>Como o MixFretes funciona</span>
+                <i class="fas fa-chevron-down" id="instructions-icon"></i>
+            </div>
+            <div class="instructions-content" id="instructions-content" style="display: none;">
+                <p>O MixFretes calcula o valor ideal do frete baseado nos dados fornecidos no formulário.</p>
+                <p>Nosso objetivo é fornecer uma estimativa precisa considerando os custos com combustível, manutenção, e outros fatores importantes para o transporte rodoviário.</p>
+                <p><strong>Política de Privacidade:</strong> O MixFretes é um projeto open source criado com o intuito de aprendizado por parte do seu time de desenvolvimento. Todos os dados são aproximados, podendo não ser ideais devido à constante atualização de preços. Considere isso ao utilizar o serviço. O projeto MixFretes se isenta de qualquer responsabilidade, e ao utilizar você concorda com nossa política de privacidade.</p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>🍀 &copy; 2024 Mix Fretes. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Popup Form -->
+    <div id="popupForm" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h2>Informações adicionais</h2>
+            <label for="descricao">Descrição:</label>
+            <input type="text" id="descricao" required>
+            <label for="peso">Peso (kg):</label>
+            <input type="number" id="peso" required>
+            <label for="incluirClima">
+                <input type="checkbox" id="incluirClima"> Incluir Clima
+            </label>
+            <button type="button" onclick="gerarImagem()">Gerar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
