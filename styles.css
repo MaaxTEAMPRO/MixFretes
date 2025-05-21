@@ -1,10 +1,10 @@
 :root {
     --primary-color: #0072ff;
     --primary-dark: #0072ff;
-    --secondary-color: #00a9ff;
+    --secondary-color: #0072ff;
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
-    --dark-color: #144386;
+    --dark-color: #123354;
     --light-color: #f8fafc;
     --gray-color: #4682d3;
     --light-gray: #e2e8f0;
@@ -35,7 +35,7 @@ body {
 
 .app-header {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: white;
+    color: #ffffff;
     padding: 1.5rem;
     text-align: center;
     box-shadow: var(--shadow);
@@ -230,7 +230,7 @@ button {
 }
 
 .results-section {
-    background: white;
+    background: #FFFFFF;
     border-radius: 0.5rem;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -277,7 +277,7 @@ button {
 }
 
 .result-card {
-    background-color: #f8fafc;
+    background-color: #F5F7FA;
     border-radius: 0.5rem;
     padding: 1rem;
     border-left: 4px solid var(--primary-color);
@@ -285,7 +285,7 @@ button {
 }
 
 .result-card.highlight {
-    background-color: #eff6ff;
+    background-color: #F5F7FA;
     border-left-color: var(--primary-dark);
 }
 
