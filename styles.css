@@ -21,7 +21,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #1c4c7d;
+    background-color: #123354;
     color: var(--dark-color);
     line-height: 1.6;
     transition: var(--transition);
@@ -340,7 +340,7 @@ button {
 }
 
 .weather-card {
-    background-color: #008dff17;
+    background-color: #F5F7FA;
     border-radius: 0.5rem;
     padding: 1rem;
     font-size: 0.9rem;
