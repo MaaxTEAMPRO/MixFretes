@@ -1,14 +1,14 @@
 :root {
-    --primary-color: #2563eb;
-    --primary-dark: #1d4ed8;
-    --secondary-color: #10b981;
+    --primary-color: #0072ff;
+    --primary-dark: #0072ff;
+    --secondary-color: #00a9ff;
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
-    --dark-color: #1e293b;
+    --dark-color: #144386;
     --light-color: #f8fafc;
-    --gray-color: #64748b;
+    --gray-color: #4682d3;
     --light-gray: #e2e8f0;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow: 0 4px 6px -1px rgb(4 4 4 / 35%);
     --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
 }
@@ -21,7 +21,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f1f5f9;
+    background-color: #1c4c7d;
     color: var(--dark-color);
     line-height: 1.6;
     transition: var(--transition);
@@ -340,7 +340,7 @@ button {
 }
 
 .weather-card {
-    background-color: #f8fafc;
+    background-color: #008dff17;
     border-radius: 0.5rem;
     padding: 1rem;
     font-size: 0.9rem;
